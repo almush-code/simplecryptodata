@@ -2,7 +2,7 @@ name: Flutter CI Action, create build for manual testing       # То, что б
 on: push
 
 jobs:                                                          # Делаем сборку для Android
-  build:
+  build_apk:
     name: Build APK
     runs-on: ubuntu-latest
     steps:
@@ -20,7 +20,7 @@ jobs:                                                          # Делаем с
     - run: flutter build apk
     - run: flutter build appbundle
 
-  build:
+  build_ios:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v3
