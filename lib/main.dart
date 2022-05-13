@@ -13,7 +13,7 @@ void main() {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp ({Key? key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -57,7 +57,8 @@ class _MyAppState extends State<MyApp> {
           content: SingleChildScrollView(
             child: ListBody(
               children: const <Widget>[
-                Text('You have a problem with Internet connection or wrong ApiKey from CoinAPI. Please try later'),
+                Text(
+                    'You have a problem with Internet connection or wrong ApiKey from CoinAPI. Please try later'),
               ],
             ),
           ),
@@ -81,15 +82,21 @@ class _MyAppState extends State<MyApp> {
     var decodedData;
     int _msgNo = 0;
     do {
-      http.Response res = await http.get(Uri.parse('https://rest.coinapi.io/v1/assets?apikey=BFB948DE-76ED-4FBD-8487-265856991F16'));
+      http.Response res = await http.get(Uri.parse(
+          'https://rest.coinapi.io/v1/assets?apikey=BFB948DE-76ED-4FBD-8487-265856991F16'));
       _msgNo = res.statusCode;
       decodedData = jsonDecode(res.body);
       _errCount++;
-    } while ( _msgNo != 200 && decodedData is! List && _errCount<7 );
+    } while (_msgNo != 200 && decodedData is! List && _errCount < 7);
     if (decodedData is List) {
-      var lstMapCurr = decodedData.where((element) => element['type_is_crypto'] == 1 ).toList();
-      lstMapCurr.forEach((element) { _lstCurr.add(element['asset_id'] + '/USD'); });
-      _lstCurr.removeRange(99, _lstCurr.length - 1);    // <<< First 100 instead of 1500 elements
+      var lstMapCurr = decodedData
+          .where((element) => element['type_is_crypto'] == 1)
+          .toList();
+      lstMapCurr.forEach((element) {
+        _lstCurr.add(element['asset_id'] + '/USD');
+      });
+      _lstCurr.removeRange(
+          99, _lstCurr.length - 1); // <<< First 100 instead of 1500 elements
       itemsDropdownButton = _lstCurr;
       return _lstCurr;
     } else {
@@ -97,33 +104,32 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-
   Future<List<Candle>> fetchCandles() async {
     int _errCount = 0;
     var decodedData;
     int _msgNo = 0;
 
     do {
-      http.Response res = await http.get(Uri.parse('https://rest.coinapi.io/v1/ohlcv/$selectedItem/latest?period_id=1DAY&apikey=BFB948DE-76ED-4FBD-8487-265856991F16'));
+      http.Response res = await http.get(Uri.parse(
+          'https://rest.coinapi.io/v1/ohlcv/$selectedItem/latest?period_id=1DAY&apikey=BFB948DE-76ED-4FBD-8487-265856991F16'));
       _msgNo = res.statusCode;
       decodedData = jsonDecode(res.body);
       _errCount++;
-    } while ( _msgNo != 200 && decodedData is! List && _errCount<7 );
+    } while (_msgNo != 200 && decodedData is! List && _errCount < 7);
     if (decodedData is List) {
       List<Candle> lstCandle = [];
-      for (var i = 0; i<decodedData.length; i++) {
+      for (var i = 0; i < decodedData.length; i++) {
         String sTime = decodedData[i]["time_period_start"];
         sTime = timeFromCoinapi(sTime);
         DateTime dTime = DateTime.parse(sTime);
 
         final candle = Candle(
-            date:   dTime,
-            open:   decodedData[i]["price_open"],
-            high:   decodedData[i]["price_high"],
-            low:    decodedData[i]["price_low"],
-            close:  decodedData[i]["price_close"],
-            volume: decodedData[i]["volume_traded"]
-        );
+            date: dTime,
+            open: decodedData[i]["price_open"],
+            high: decodedData[i]["price_high"],
+            low: decodedData[i]["price_low"],
+            close: decodedData[i]["price_close"],
+            volume: decodedData[i]["volume_traded"]);
         lstCandle.add(candle);
       }
       setState(() {
@@ -135,7 +141,6 @@ class _MyAppState extends State<MyApp> {
       _msgErrConnection();
       throw Exception('Failed to load');
     }
-
   }
 
   @override
@@ -159,10 +164,12 @@ class _MyAppState extends State<MyApp> {
                     child: DropdownButton<String>(
                       isExpanded: true,
                       value: selectedItem,
-                      onChanged: (String? string) => setState(() => selectedItem = string!),
+                      onChanged: (String? string) =>
+                          setState(() => selectedItem = string!),
                       selectedItemBuilder: (BuildContext context) {
                         return itemsDropdownButton.map<Widget>((String item) {
-                          return Text(item,
+                          return Text(
+                            item,
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                               height: 2.0,
@@ -178,24 +185,29 @@ class _MyAppState extends State<MyApp> {
                       }).toList(),
                     ),
                   ),
-                  Container( width: 20,),
+                  Container(
+                    width: 20,
+                  ),
                   ElevatedButton(
-                      onPressed: () {
-                        print(selectedItem);
-                        fetchCandles();
-                        _sendMessage();
-                        //Candlesticks(candles: candles);
-                      },
-                      child: const Text('Subscribe'),
+                    onPressed: () {
+                      print(selectedItem);
+                      fetchCandles();
+                      _sendMessage();
+                      //Candlesticks(candles: candles);
+                    },
+                    child: const Text('Subscribe'),
                   )
                 ],
               ),
-              const SizedBox( height: 14, ),
+              const SizedBox(
+                height: 14,
+              ),
               Container(
                 //height: 110,
                 padding: const EdgeInsets.all(10.0),
                 decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(5.0)),        // <<<<<<<<<<
+                  borderRadius:
+                      BorderRadius.all(Radius.circular(5.0)), // <<<<<<<<<<
                   color: Colors.white,
                 ),
                 child: StreamBuilder(
@@ -224,13 +236,17 @@ class _MyAppState extends State<MyApp> {
                           flex: 1,
                           child: Column(
                             children: [
-                              const Text('Symbol:',
+                              const Text(
+                                'Symbol:',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              Text(_sCurr,
-                                style: const TextStyle( height: 1.4, ),
+                              Text(
+                                _sCurr,
+                                style: const TextStyle(
+                                  height: 1.4,
+                                ),
                               ),
                             ],
                           ),
@@ -239,13 +255,17 @@ class _MyAppState extends State<MyApp> {
                           flex: 1,
                           child: Column(
                             children: [
-                              const Text('Price:',
+                              const Text(
+                                'Price:',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              Text(_sPrice,
-                                style: const TextStyle( height: 1.4, ),
+                              Text(
+                                _sPrice,
+                                style: const TextStyle(
+                                  height: 1.4,
+                                ),
                               ),
                             ],
                           ),
@@ -254,13 +274,17 @@ class _MyAppState extends State<MyApp> {
                           flex: 1,
                           child: Column(
                             children: [
-                              const Text('Time:',
+                              const Text(
+                                'Time:',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              Text(_sTime,
-                                style: const TextStyle( height: 1.4, ),
+                              Text(
+                                _sTime,
+                                style: const TextStyle(
+                                  height: 1.4,
+                                ),
                               ),
                             ],
                           ),
@@ -271,7 +295,9 @@ class _MyAppState extends State<MyApp> {
                   },
                 ),
               ),
-              const SizedBox( height: 10, ),
+              const SizedBox(
+                height: 10,
+              ),
               Expanded(
                 child: Candlesticks(
                   candles: candles,
@@ -308,5 +334,4 @@ class _MyAppState extends State<MyApp> {
     _channel.sink.close();
     super.dispose();
   }
-
 }
