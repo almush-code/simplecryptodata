@@ -233,7 +233,7 @@ class _MyAppState extends State<MyApp> {
                     return Row(
                       children: [
                         Expanded(
-                          flex: 1,
+                          flex: 7,
                           child: Column(
                             children: [
                               const Text(
@@ -252,7 +252,7 @@ class _MyAppState extends State<MyApp> {
                           ),
                         ),
                         Expanded(
-                          flex: 1,
+                          flex: 9,
                           child: Column(
                             children: [
                               const Text(
@@ -271,7 +271,7 @@ class _MyAppState extends State<MyApp> {
                           ),
                         ),
                         Expanded(
-                          flex: 1,
+                          flex: 10,
                           child: Column(
                             children: [
                               const Text(
