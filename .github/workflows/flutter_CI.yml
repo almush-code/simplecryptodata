@@ -1,8 +1,8 @@
 name: Flutter CI Action, create build for manual testing       # То, что будет отображаться во вкладке Actions
 on: push
 
-jobs:                                                          # Делаем сборку для Android
-  build_apk:
+jobs:       
+  build_apk:                                                   # Делаем сборку для Android
     name: Build APK
     runs-on: ubuntu-latest
     steps:
@@ -23,12 +23,12 @@ jobs:                                                          # Делаем с
     - name: collect apk artifacts                             
       uses: actions/upload-artifact@v3
       with:
-        name: Download Android version
-        # Path to the release files
+        name: Download for Android
+        # Правильный путь взять при выводе результата flutter build
         path: build/app/outputs/flutter-apk/app-release.apk
 
 
-  build_ios:
+  build_ios:                                                   # Делаем сборку для iOS
     name: Build iOS
     runs-on: macos-latest
     steps:
@@ -40,9 +40,15 @@ jobs:                                                          # Делаем с
     - run: flutter pub get
     #- run: flutter test
     - run: flutter build ios --release --no-codesign
-    - name: collect ipa artifacts                             
-      uses: actions/upload-artifact@v3
+    # - name: collect ipa artifacts                             
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: Download for iOS
+    #     # Правильный путь взять при выводе результата flutter build
+    #     path: /Users/runner/work/simplecryptodata/simplecryptodata/build/ios/iphoneos/Runner.app
+
+    - name: Upload iPA
+      uses: actions/upload-artifact@master
       with:
-        name: Download iOS version
-        # Path to the release files
-        path: /Users/runner/work/simplecryptodata/simplecryptodata/build/ios/iphoneos/Runner.app
+        name: ios-build
+        path: build/ios/iphoneos
