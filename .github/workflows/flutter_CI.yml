@@ -39,7 +39,9 @@ jobs:
         architecture: x64
     - run: flutter pub get
     #- run: flutter test
-    - run: flutter build ios --release --no-codesign
+    # - run: flutter build ios --release --no-codesign
+    - run: flutter build ipa --release --no-codesign
+
     # - name: collect ipa artifacts                             
     #   uses: actions/upload-artifact@v3
     #   with:
@@ -47,8 +49,8 @@ jobs:
     #     # Правильный путь взять при выводе результата flutter build
     #     path: /Users/runner/work/simplecryptodata/simplecryptodata/build/ios/iphoneos/Runner.app
 
-    - name: Upload iPA
-      uses: actions/upload-artifact@master
-      with:
-        name: ios-build
-        path: build/ios/iphoneos
+    # - name: Upload iPA
+    #   uses: actions/upload-artifact@master
+    #   with:
+    #     name: ios-build
+    #     path: build/ios/iphoneos
