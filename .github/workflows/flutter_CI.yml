@@ -1,6 +1,5 @@
 name: Flutter CI Action, create build for manual testing       # То, что будет отображаться во вкладке Actions
 on: push
-workflow_dispatch:                                             # Разрашает запуск 
 
 jobs:                                                          # Делаем сборку для Android
   build_apk:
