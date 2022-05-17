@@ -1,9 +1,8 @@
 name: Flutter CI Action, create build for manual testing       # То, что будет отображаться во вкладке Actions
 on: push
-workflow_dispatch:                                             # Разрашает запуск 
 
-jobs:                                                          # Делаем сборку для Android
-  build_apk:
+jobs:       
+  build_apk:                                                   # Делаем сборку для Android
     name: Build APK
     runs-on: ubuntu-latest
     steps:
@@ -14,7 +13,7 @@ jobs:                                                          # Делаем с
         java-version: '11'
     - uses: subosito/flutter-action@v2
       with:
-        flutter-version: '2.10.5'
+        flutter-version: '3.0.0'
         channel: 'stable'
     - run: flutter --version                                   # Выведет текущую версию Flutter
     - run: flutter pub get
@@ -24,26 +23,55 @@ jobs:                                                          # Делаем с
     - name: collect apk artifacts                             
       uses: actions/upload-artifact@v3
       with:
-        name: Download Android version
-        # Path to the release files
+        name: apk-build
+        # Правильный путь взять при выводе результата flutter build
         path: build/app/outputs/flutter-apk/app-release.apk
 
 
-  build_ios:
+  build_ios:                                                   # Делаем сборку для iOS
     name: Build iOS
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v3
     - uses: subosito/flutter-action@v2
       with:
-        flutter-version: '2.10.5'
+        flutter-version: '3.0.0'
         architecture: x64
     - run: flutter pub get
     #- run: flutter test
-    - run: flutter build ios --release --no-codesign
+
+    - name: Build iOS App
+      run: |
+        flutter build ios --no-codesign
+        cd build/ios/iphoneos
+        mkdir Payload
+        cd Payload
+        ln -s ../Runner.app
+        cd ..
+        zip -r app.ipa Payload    
     - name: collect ipa artifacts                             
       uses: actions/upload-artifact@v3
       with:
-        name: Download iOS version
-        # Path to the release files
-        path: /Users/runner/work/simplecryptodata/simplecryptodata/build/ios/iphoneos/Runner.app
+        name: ipa-build
+        # Правильный путь взять при выводе результата flutter build
+        path: build/ios/iphoneos/app.ipa
+
+
+
+
+    # - run: flutter build ios --release --no-codesign
+    # - run: flutter build ipa --release
+
+    # - name: collect ipa artifacts                             
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: Download for iOS
+    #     # Правильный путь взять при выводе результата flutter build
+    #     path: /Users/runner/work/simplecryptodata/simplecryptodata/build/ios/iphoneos/Runner.app
+
+    # - name: Upload iPA
+    #   uses: actions/upload-artifact@master
+    #   with:
+    #     name: ios-build
+    #     path: build/ios/iphoneos
+
