@@ -23,7 +23,7 @@ jobs:
     - name: collect apk artifacts                             
       uses: actions/upload-artifact@v3
       with:
-        name: Download for Android
+        name: apk-build
         # Правильный путь взять при выводе результата flutter build
         path: build/app/outputs/flutter-apk/app-release.apk
 
@@ -39,8 +39,28 @@ jobs:
         architecture: x64
     - run: flutter pub get
     #- run: flutter test
+
+    - name: Build iOS App
+      run: |
+        flutter build ios --no-codesign
+        cd build/ios/iphoneos
+        mkdir Payload
+        cd Payload
+        ln -s ../Runner.app
+        cd ..
+        zip -r app.ipa Payload    
+    - name: collect ipa artifacts                             
+      uses: actions/upload-artifact@v3
+      with:
+        name: ipa-build
+        # Правильный путь взять при выводе результата flutter build
+        path: build/ios/iphoneos/app.ipa
+
+
+
+
     # - run: flutter build ios --release --no-codesign
-    - run: flutter build ipa --release --no-codesign
+    # - run: flutter build ipa --release
 
     # - name: collect ipa artifacts                             
     #   uses: actions/upload-artifact@v3
@@ -54,3 +74,4 @@ jobs:
     #   with:
     #     name: ios-build
     #     path: build/ios/iphoneos
+
